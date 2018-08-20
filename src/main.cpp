@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <regex>
 #include <map>
 
@@ -46,18 +47,57 @@ struct Parser
 {
     static void Parse(std::map<std::size_t, std::pair<std::string, std::string>> tokens)
     {
+	std::cout << "Parseing begun" << std::endl;
+
         for (auto match = tokens.begin(); match != tokens.end(); ++match)
             std::cout << match->second.first << " " << match->second.second << std::endl;
     }
 };
 
+
+struct FileReader
+{
+	static std::string ReadFile(std::string filename)
+	{
+		//The return string
+		std::string return_string = "";
+
+		
+		//File to be opened
+		std::ifstream mystream (filename, std::ifstream::in);
+		
+		return_string += mystream.get();
+
+		while(mystream.good())
+		{
+		 
+			return_string += mystream.get();
+		
+		}
+
+		//Close the stream
+		mystream.close();
+
+		return return_string;
+	}
+
+};
+
+
+
 int main(int argc, char const *argv[])
 {
     /* code */
+ 
+//	std::cout << argv[1]<< std::endl;
 
-    std::string hep = "int main() { int A = 4; return 2; }";
+    auto codefile = FileReader::ReadFile(argv[1]);
 
-    auto matches = Lexer::tokenize(hep);
+    // std::cout << FileReader::ReadFile("main.dro");
+
+    //std::string hep = "int main() { int A = 4; return 2; }";
+
+    auto matches = Lexer::tokenize(codefile);
 
     Parser::Parse(matches);
 
